@@ -2,7 +2,10 @@ class Login:
     URL = "https://www.naver.com/"
 
     # 메인 페이지 로그인 버튼
-    LOGIN_BTN_MAIN = {"type": "XPATH", "value": '//a[contains(@class, "MyView-module__link_login") and contains(text(), "로그인")]'}
+    LOGIN_BTN_MAIN = {
+        "type": "XPATH",
+        "value": '//a[contains(@class, "MyView-module__link_login") and contains(text(), "로그인")]'
+    }
 
     # 로그인 화면 입력창
     ID_INPUT = {"type": "XPATH", "value": '//input[@id="id"]'}

@@ -1,6 +1,7 @@
 import pytest
 from common.playwright import PlaywrightClient
 
+
 @pytest.fixture(scope="session")
 def playwright_client():
     # 여기서 실행 환경에 맞춰 인자 조정
