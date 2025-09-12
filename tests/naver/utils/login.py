@@ -1,4 +1,7 @@
 import time
+
+from playwright.sync_api import expect
+
 from locator.naver.login import Login
 
 
@@ -28,6 +31,19 @@ class NaverLogin:
         self.page.locator(Login.LOGIN_BTN_FORM["value"]).click()
         pass
 
+    def click_login_btn(self):
+        # 로그인 버튼 클릭
+        self.page.locator(Login.LOGIN_BTN_FORM["value"]).click()
+
     def login_success(self):
         # 실제 로그인 확인은 생략, True 가정
         return True
+
+    def login_fail_visible(self):
+        """
+        잘못된 아이디/비밀번호 입력 시 오류 메시지가 보이는지 확인
+        """
+        error_locator = self.page.locator(Login.ERROR_MSG["value"])
+        # 최대 5초 동안 visible 될 때까지 기다림
+        expect(error_locator).to_be_visible(timeout=5000)
+        return error_locator.is_visible()

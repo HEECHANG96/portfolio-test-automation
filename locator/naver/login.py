@@ -11,6 +11,9 @@ class Login:
     ID_INPUT = {"type": "XPATH", "value": '//input[@id="id"]'}
     PWD_INPUT = {"type": "XPATH", "value": '//input[@id="pw"]'}
 
+    # 로그인 실패 에러 메시지
+    ERROR_MSG = {"type": "XPATH", "value": '//div[@id="err_common"]'}
+
     # 로그인 화면 로그인 버튼
     LOGIN_BTN_FORM = {"type": "XPATH", "value": '//button[@id="log.login"]'}
 
