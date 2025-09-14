@@ -1,7 +1,5 @@
 import time
-
 from playwright.sync_api import expect
-
 from locator.naver.login import Login
 
 
@@ -13,6 +11,10 @@ class NaverLogin:
     def __init__(self, page):
         self.page = page
 
+    def go_to_naver_page(self):
+        # 메인 페이지로 이동
+        self.page.goto(Login.URL)
+
     def go_to_login_page(self):
         # 메인 페이지로 이동
         self.page.goto(Login.URL)
@@ -20,10 +22,16 @@ class NaverLogin:
         self.page.locator(Login.LOGIN_BTN_MAIN["value"]).click()
         time.sleep(3)
 
+    def main_login_button_visible(self):
+        return self.page.is_visible(Login.LOGIN_BTN_MAIN["value"])
+
     def enter_credentials(self, user_id="test_user", password="test_pw"):
         # 입력창에 ID/PW 입력
         self.page.locator(Login.ID_INPUT["value"]).fill(user_id)
         self.page.locator(Login.PWD_INPUT["value"]).fill(password)
+
+    def form_login_button_visible(self):
+        return self.page.is_visible(Login.LOGIN_BTN_FORM["value"])
 
     def click_login(self):
         # 로그인 버튼 클릭
@@ -47,3 +55,7 @@ class NaverLogin:
         # 최대 5초 동안 visible 될 때까지 기다림
         expect(error_locator).to_be_visible(timeout=5000)
         return error_locator.is_visible()
+
+    def is_login_button_disabled(self):
+        button_class = self.page.get_attribute(Login.LOGIN_BTN_FORM["value"], "class")
+        return "off" in button_class if button_class else False
