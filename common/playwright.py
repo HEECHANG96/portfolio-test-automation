@@ -1,48 +1,78 @@
-from playwright.sync_api import sync_playwright
+from typing import Optional, Tuple
+from playwright.sync_api import sync_playwright, Playwright, Browser, BrowserContext, Page
+
 
 class PlaywrightClient:
-    def __init__(self, headless=True, browser_type="chromium", width=1920, height=1080):
-        self.headless = headless
+    def __init__(
+        self,
+        browser_type: str = "chromium",            # "chromium", "firefox", "webkit"
+        headless: bool = True,                     # 브라우저 UI 표시 여부
+        viewport: Tuple[int, int] = (1920, 1080),  # 뷰포트 크기
+        args: Optional[list[str]] = None,          # 추가 런치 플래그
+        channel: Optional[str] = None,             # 예: "chrome" (실제 크롬 실행)
+        proxy: Optional[dict] = None,              # {"server": "...", "username": "...", "password": "..."}
+        locale: str = "ko-KR",                     # 기본 로케일
+        timezone_id: str = "Asia/Seoul",           # 기본 타임존
+        default_timeout_ms: int = 10000,           # 기본 타임아웃(ms)
+    ):
         self.browser_type = browser_type
-        self.width = width
-        self.height = height
-        self.playwright = None
-        self.browser = None
-        self.context = None
-        self.page = None
+        self.headless = headless
+        self.viewport = viewport
+        self.args = args
+        self.channel = channel
+        self.proxy = proxy
+        self.locale = locale
+        self.timezone_id = timezone_id
+        self.default_timeout_ms = default_timeout_ms
 
-    # 브라우저를 실제로 시작하는 메서드
-    def start_browser(self):
-        # Playwright 프로세스를 시작하고, 제어 핸들을 self.playwright에 저장
-        self.playwright = sync_playwright().start()
+        self.pw: Optional[Playwright] = None
+        self.browser: Optional[Browser] = None
+        self.context: Optional[BrowserContext] = None
+        self.page: Optional[Page] = None
 
-        # self.browser_type 문자열("chromium"/"firefox"/"webkit")에 맞는 런처 객체를 동적으로 얻는다.
-        # 예: self.playwright.chromium / self.playwright.firefox / self.playwright.webkit
-        browser_launcher = getattr(self.playwright, self.browser_type)
+    # with 구문 지원
+    def __enter__(self):
+        self.start()
+        return self
 
-        # 해당 엔진으로 브라우저 실행. headless 인자에 따라 창 표시 여부 결정
-        # (참고: 여기서 'chromium'은 크롬이 아닌 Playwright가 번들한 Chromium임.
-        #  실제 Chrome을 쓰려면 channel="chrome"을 추가해야 함)
-        self.browser = browser_launcher.launch(headless=self.headless)
+    def __exit__(self, exc_type, exc, tb):
+        self.stop()
 
-        # 새 브라우저 컨텍스트 생성. viewport로 페이지 뷰포트 크기를 설정
-        # (컨텍스트는 쿠키/세션이 분리되는 독립적인 브라우저 프로필 같은 것)
-        self.context = self.browser.new_context(
-            viewport={"width": self.width, "height": self.height}
+    def start(self) -> Page:
+        """브라우저/컨텍스트/페이지를 초기화"""
+        self.pw = sync_playwright().start()
+
+        launcher = getattr(self.pw, self.browser_type, None)
+        if launcher is None:
+            raise ValueError(f"Unsupported browser type: {self.browser_type}")
+
+        self.browser = launcher.launch(
+            headless=self.headless,
+            args=self.args,
+            channel=self.channel,
+            proxy=self.proxy,
         )
 
-        # 위 컨텍스트에서 새 탭(Page) 하나를 연다. 이후 상호작용은 보통 self.page로 진행
+        w, h = self.viewport
+        self.context = self.browser.new_context(
+            viewport={"width": w, "height": h},
+            locale=self.locale,
+            timezone_id=self.timezone_id,
+            accept_downloads=True,
+        )
+        self.context.set_default_timeout(self.default_timeout_ms)
         self.page = self.context.new_page()
+        return self.page
 
-    # 리소스를 정리(닫기)하는 메서드
     def stop(self):
-        if self.context:
-            self.context.close()
-
-        # 브라우저 프로세스 종료
-        if self.browser:
-            self.browser.close()
-
-        # Playwright 드라이버 자체 종료(백그라운드 프로세스/서버 정리)
-        if self.playwright:
-            self.playwright.stop()
+        """리소스를 안전하게 정리"""
+        for obj, closer in [
+            (self.context, "close"),
+            (self.browser, "close"),
+            (self.pw, "stop"),
+        ]:
+            if obj:
+                try:
+                    getattr(obj, closer)()
+                except Exception:
+                    pass
