@@ -99,10 +99,11 @@ def test_naver_login_empty_credentials(playwright_client):
 
 
 # TestRail 실행 명령어 예시
-# pytest tests/ \
+# pytest tests/naver/test_login.py \
 #   --testrail \
 #   --tr-url https://yourcompany.testrail.io \
 #   --tr-email user@example.com \
 #   --tr-password your_api_key_here \
-#   --tr-project-id 1 \
-#   --tr-suite-id 101
+#   --tr-testrun-project-id 123 \
+#   --tr-testrun-suite-id 456 \
+#   --tr-testrun-name local_Naver-v1.0.0-login_0916_1
