@@ -44,6 +44,9 @@ class NaverSearch:
         """
         self.enter_keyword(keyword)
         self.click_search_button()
+        # Playwright에서 페이지가 완전히 로드될 때까지 기다리는 기능을 수행
+        # 브라우저에서 페이지의 **로드 상태(load state)**를 관찰하고, 특정 상태가 될 때까지 대기(blocking) 함
+        # 검색 후 결과 페이지가 완전히 준비될 때까지 기다리는 안전장치 역할
         self.page.wait_for_load_state("networkidle", timeout=timeout)
         return self.page.url
 
