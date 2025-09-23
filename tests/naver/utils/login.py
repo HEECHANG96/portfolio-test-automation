@@ -1,23 +1,22 @@
 import time
-from playwright.sync_api import expect
+from playwright.sync_api import expect, Page
 from locator.naver.login import Login
+from tests.naver.utils.base import NaverBase
 
 
-class NaverLogin:
+class NaverLogin(NaverBase):
     """
     네이버 로그인 유틸 클래스
     실제 계정 없이 테스트 구조를 보여주는 예시
     """
-    def __init__(self, page):
-        self.page = page
 
-    def go_to_naver_page(self):
-        # 메인 페이지로 이동
-        self.page.goto(Login.URL)
+    def __init__(self, page: Page):
+        # 부모 클래스(NaverBase) 초기화
+        super().__init__(page)
 
     def go_to_login_page(self):
-        # 메인 페이지로 이동
-        self.page.goto(Login.URL)
+        # 부모 클래스 메서드 사용 → 메인 페이지 이동
+        self.go_to_naver_page()
         # 로그인 버튼 클릭 (메인 페이지)
         self.page.locator(Login.LOGIN_BTN_MAIN["value"]).click()
         time.sleep(3)
