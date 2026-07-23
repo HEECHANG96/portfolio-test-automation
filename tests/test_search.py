@@ -1,5 +1,5 @@
 from pytest_testrail.plugin import pytestrail
-from tests.naver.utils.search import NaverSearch
+from pages.main_page import NaverSearch
 
 SEARCH_KEYWORD = "테스트"
 
