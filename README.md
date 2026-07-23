@@ -5,9 +5,10 @@ Playwright와 Pytest를 활용하여 웹/앱 서비스의 주요 기능을 검�
 
 ---
 ## 📌 프로젝트 개요
-- 웹 서비스의 핵심 기능(로그인, 검색, 페이지 이동)에 대한 자동화 테스트 구축
-- Page Object Model 기반 구조 설계로 유지보수성 향상
-- 테스트 실행 속도 개선 및 안정적인 테스트 환경 구성
+- **크로스 플랫폼 및 핵심 기능 검증:** Web ↔ Mobile App 연동 시나리오 및 주요 기능 자동화
+- **POM 기반 구조 설계:** Page Object Model 패턴을 적용하여 UI 변경에 유연한 유지보수성 확보
+- **테스트 실행 속도 개선:** Selenium 대비 빠르고 안정적인 Playwright 도입 및 Dynamic Wait 적용
+- **품질 검증 표준화:** 1 TC - 1 Assertion 원칙 및 명확한 단정어 기반의 TC 설계 컨벤션 적용
 
 ---
 
@@ -26,6 +27,22 @@ Playwright와 Pytest를 활용하여 웹/앱 서비스의 주요 기능을 검�
 - Git / GitHub
 - TestRail
 
+---
+
+## 🔄 Automation Selection & Execution Process (자동화 전환 프로세스)
+
+1. **수동 TC 기반 자동화 대상 선별**
+   - 수동 테스트 케이스 중 반복해서 검증해야 하는 핵심 기능(로그인, 결제, 주요 조회 등)을 우선적으로 선별
+   - UI가 자주 바뀌는 영역은 제외하고, 데이터 검증과 주요 사용자 흐름(Main Flow) 중심으로 자동화 스크립트 작성
+
+2. **고객사 요구사항 기반 E2E 시나리오 자동화**
+   - 고객사 제공 테스트 시나리오를 분석하여 **웹(Web) - 모바일 앱(App) 연동 E2E 자동화 스크립트** 작성 및 구현
+   - 플랫폼 간(Web ↔ App) 데이터 동기화 및 권한 처리 검증 자동화 구축
+
+3. **안정성 및 신뢰도 향상 전략**
+   - 불필요한 실패(Flaky Test)를 줄이기 위해 속성 기반 Selector(`data-testid`, `aria-label` 등) 및 Dynamic Wait 도입
+   - Pytest / Playwright 기반 1 TC - 1 Assertion 원칙 적용
+  
 ---
 
 ## 📋 테스트 시나리오
