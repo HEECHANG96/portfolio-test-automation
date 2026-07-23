@@ -1,6 +1,6 @@
 import time
 from playwright.sync_api import expect
-from locator.naver.login import Login
+from locator.login import Login
 
 
 class NaverLogin:
