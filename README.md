@@ -45,6 +45,53 @@ Playwright와 Pytest를 활용하여 웹/앱 서비스의 주요 기능을 검�
   
 ---
 
+## 📋 TC 설계 컨벤션 (Quality Assurance Convention)
+
+테스트의 명확성과 자동화 전환 용이성을 위해 아래 원칙을 준수하여 TC를 작성했습니다.
+
+1. **명확한 확정 단정어 사용 (`~노출됨`, `~이동됨`)**
+   - 모호한 표현을 제거하여 검증 결과의 객관성 확보
+2. **단일 기대 결과 원칙 (1 TC = 1 Verification Point)**
+   - 복합 동작을 개별 TC로 분리하여 자동화 코드의 Assertion 단위 축소
+3. **상태 해제/예외 조건 구체화**
+   - 노출 조건뿐만 아니라 마우스 오버 해제, 외부 영역 클릭 등 소멸 조건 명시
+
+---
+
+---
+
+## 🧪 테스트 시나리오 및 작성 예시 (Sample)
+
+### 1. 주요 검증 시나리오
+- **인증 (Auth):** 메인/로그인 화면 UI 요소 검증, 정상 로그인/대시보드 진입, 예외 처리(잘못된 정보 입력, 미입력 상태)
+- **검색 (Search):** 키워드 검색, 결과 페이지 이동 및 UI 요소 검증
+- **네비게이션 (Navigation):** 주요 카테고리 메뉴 이동 및 URL/페이지 정상 전환 검증
+
+### 2. 자동화 스크립트 예시 (`tests/test_login.py`)
+
+```python
+import pytest
+from pytest_testrail.plugin import pytestrail
+from pages.login_page import LoginPage
+
+@pytestrail.case('C10003')
+def test_login_success(playwright_client):
+    """
+    [TC_AUTH_003] 정상 계정 로그인 및 대시보드 진입 검증
+    """
+    client = playwright_client
+    login_page = LoginPage(client.page)
+
+    # 1. 로그인 페이지 이동
+    login_page.go_to_login_page()
+
+    # 2. ID/PW 입력 및 로그인 제출
+    dashboard_page = login_page.login(user_id="valid_user", password="valid_password123!")
+
+    # 3. 로그인 성공 후 프로필/대시보드 영역 노출 확인
+    assert dashboard_page.is_profile_visible(), "정상 로그인 후 프로필 영역 노출됨"
+```
+
 ## 📋 테스트 시나리오
 - **자동화 대상**
   - **네이버 웹 브라우저**를 예시로, 로그인, 검색 등 기본 기능 테스트 (예시)
@@ -76,10 +123,8 @@ Playwright와 Pytest를 활용하여 웹/앱 서비스의 주요 기능을 검�
 ## 🚀 문제 해결 및 개선 경험
 
 ### 1. 테스트 실행 시간 개선
-- 기존 Selenium 실행 속도 이슈 존재
-- Playwright로 전환 후 테스트 실행 시간 약 50% 단축
-
----
+- 기존 Selenium 기반 실행 속도 및 리소스 부담 이슈를 Playwright 프레임워크로 전환하여 테스트 실행 시간 약 50% 단축
+- Playwright의 Auto-waiting 메커니즘을 활용하여 불필요한 대기 코드(sleep) 제거
 
 ### 2. 요소 식별 안정성 개선
 - 동적 UI 환경에서 XPath 기반 locator 실패 발생
@@ -97,7 +142,6 @@ Playwright와 Pytest를 활용하여 웹/앱 서비스의 주요 기능을 검�
 ---
 
 ## 💡 배운 점
-- 테스트 자동화는 단순 구현보다 구조 설계가 중요함을 경험
-- 안정적인 locator 전략이 테스트 신뢰도에 큰 영향을 미침
-- 실행 속도 개선이 테스트 효율성과 직결됨을 체감
-- 테스트 자동화를 통해 서비스 기능을 반복 검증하며, 시스템 운영 관점에서의 안정성 확보와 장애 예방의 중요성을 체감했습니다.
+- 구조 설계의 중요성: 단순 코드 작성을 넘어 확장과 유지보수를 고려한 POM 패턴과 Locator 전략의 중요성 체감
+- 기본기(TC)와 자동화의 연결: 명확하게 작성된 수동 TC가 신뢰도 높은 자동화 스크립트의 기본이 됨을 학습
+- 품질 관리 체계화: TestRail 연동을 통해 자동화 테스트 결과를 실시간으로 추적하고 관리하는 경험 확보
