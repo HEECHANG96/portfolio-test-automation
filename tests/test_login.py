@@ -1,6 +1,5 @@
-import pytest
 from pytest_testrail.plugin import pytestrail
-from utils.login import NaverLogin
+from pages.login_page import NaverLogin
 
 
 @pytestrail.case('C10001')
