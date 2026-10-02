@@ -1,5 +1,6 @@
 from pytest_testrail.plugin import pytestrail
 from pages.login_page import NaverLogin
+from playwright.sync_api import expect
 
 
 @pytestrail.case('C10001')
@@ -35,25 +36,27 @@ def test_form_login_button_visible(playwright_client):
 
 
 @pytestrail.case('C10003')
-def test_naver_login(playwright_client):
+def test_naver_login_credentials_input(playwright_client):
     """
-    네이버 로그인 흐름
-    - 실제 계정 없이 진행
+    로그인 화면에서 예시 아이디와 비밀번호의 입력값 검증
     """
-    client = playwright_client
-    login_util = NaverLogin(client.page)
+    login_page = NaverLogin(playwright_client.page)
+
+    user_id = "test_user"
+    password = "test_pw"
 
     # 1. 로그인 페이지 이동
-    login_util.go_to_login_page()
+    login_page.go_to_login_page()
 
-    # 2. ID/PW 입력
-    login_util.enter_credentials()
+    # 2. 예시 계정 정보 입력
+    login_page.enter_credentials(
+        user_id=user_id,
+        password=password,
+    )
 
-    # 3. 로그인 버튼 클릭 (실제 실행 X)
-    login_util.click_login()
-
-    # 4. 로그인 성공 여부 확인 (Mock)
-    assert login_util.login_success(), "로그인 흐름 시연 성공"
+    # 3. 입력값 검증
+    expect(login_page.id_input).to_have_value(user_id)
+    expect(login_page.password_input).to_have_value(password)
 
 
 @pytestrail.case('C10004')

@@ -10,6 +10,8 @@ class NaverLogin:
     """
     def __init__(self, page):
         self.page = page
+        self.id_input = page.locator(Login.ID_INPUT["value"])
+        self.password_input = page.locator(Login.PWD_INPUT["value"])
 
     def go_to_naver_page(self):
         # 메인 페이지로 이동
@@ -26,26 +28,15 @@ class NaverLogin:
         return self.page.is_visible(Login.LOGIN_BTN_MAIN["value"])
 
     def enter_credentials(self, user_id="test_user", password="test_pw"):
-        # 입력창에 ID/PW 입력
-        self.page.locator(Login.ID_INPUT["value"]).fill(user_id)
-        self.page.locator(Login.PWD_INPUT["value"]).fill(password)
+        self.id_input.fill(user_id)
+        self.password_input.fill(password)
 
     def form_login_button_visible(self):
         return self.page.is_visible(Login.LOGIN_BTN_FORM["value"])
 
-    def click_login(self):
-        # 로그인 버튼 클릭
-        # 실제 계정 로그인은 실행하지 않고 흐름만 보여줌
-        self.page.locator(Login.LOGIN_BTN_FORM["value"]).click()
-        pass
-
     def click_login_btn(self):
         # 로그인 버튼 클릭
         self.page.locator(Login.LOGIN_BTN_FORM["value"]).click()
-
-    def login_success(self):
-        # 실제 로그인 확인은 생략, True 가정
-        return True
 
     def login_fail_visible(self):
         """
