@@ -16,6 +16,7 @@ Playwright와 Pytest를 활용하여 웹/앱 서비스의 주요 기능을 검�
 ### 📁 폴더 구조
   - `common/`: 공통 라이브러리 및 설정
   - `locator/`: 페이지별 UI 요소 정의
+  - `pages/`: 페이지별 이동, 입력, 클릭 및 상태 확인 기능을 담당하는 Page Object
   - `tests/`: 테스트 케이스 및 실행 코드
   
 ---
@@ -69,27 +70,28 @@ Playwright와 Pytest를 활용하여 웹/앱 서비스의 주요 기능을 검�
 
 ### 2. 자동화 스크립트 예시 (`tests/test_login.py`)
 
+아래는 네이버 메인 페이지의 로그인 버튼 노출 여부를 검증하는 테스트입니다.
+테스트 코드는 검증 절차를 정의하고, `NaverLogin` Page Object는 페이지 이동과 UI 상태 확인을 담당합니다.
+
 ```python
-import pytest
 from pytest_testrail.plugin import pytestrail
-from pages.login_page import LoginPage
+from pages.login_page import NaverLogin
 
-@pytestrail.case('C10003')
-def test_login_success(playwright_client):
+
+@pytestrail.case('C10001')
+def test_main_login_button_visible(playwright_client):
     """
-    [TC_AUTH_003] 정상 계정 로그인 및 대시보드 진입 검증
+    메인 페이지에 로그인 버튼이 노출되는지 검증
     """
-    client = playwright_client
-    login_page = LoginPage(client.page)
+    login_page = NaverLogin(playwright_client.page)
 
-    # 1. 로그인 페이지 이동
-    login_page.go_to_login_page()
+    # 1. 네이버 메인 페이지 이동
+    login_page.go_to_naver_page()
 
-    # 2. ID/PW 입력 및 로그인 제출
-    dashboard_page = login_page.login(user_id="valid_user", password="valid_password123!")
-
-    # 3. 로그인 성공 후 프로필/대시보드 영역 노출 확인
-    assert dashboard_page.is_profile_visible(), "정상 로그인 후 프로필 영역 노출됨"
+    # 2. 메인 로그인 버튼 노출 확인
+    assert login_page.main_login_button_visible(), (
+        "메인 페이지에 로그인 버튼이 노출되어야 함"
+    )
 ```
 
 ## 📋 테스트 시나리오
