@@ -1,6 +1,6 @@
 from pytest_testrail.plugin import pytestrail
 from locator.navigation import Navigation
-from pages.main_page import NaverNavigation
+from pages.navigation_page import NaverNavigation
 
 
 @pytestrail.case('C30001')
