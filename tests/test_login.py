@@ -1,7 +1,7 @@
 from pytest_testrail.plugin import pytestrail
 from pages.login_page import NaverLogin
 from playwright.sync_api import expect
-
+import pytest
 
 @pytestrail.case('C10001')
 def test_main_login_button_visible(playwright_client):
@@ -59,6 +59,10 @@ def test_naver_login_credentials_input(playwright_client):
     expect(login_page.password_input).to_have_value(password)
 
 
+@pytest.mark.skip(
+    reason="실제 네이버 인증 요청 시 CAPTCHA가 나타나 자동 검증에서 제외"
+)
+
 @pytestrail.case('C10004')
 def test_naver_login_invalid_credentials(playwright_client):
     """
@@ -96,8 +100,11 @@ def test_naver_login_empty_credentials(playwright_client):
     # 2. 아이디/비밀번호를 입력하지 않음
     login_util.enter_credentials(user_id="", password="")
 
-    # 3. 로그인 버튼 비활성화 여부 확인
-    assert login_util.is_login_button_disabled(), "아이디/비밀번호 미입력 시 로그인 버튼은 비활성화 상태여야 함"
+    # 3. 로그인 버튼 클릭
+    login_util.click_login_btn()
+
+    # 4. 아이디 입력 요청 메시지 노출 검증
+    expect(login_util.id_required_message).to_be_visible()
 
 
 # TestRail 실행 명령어 예시

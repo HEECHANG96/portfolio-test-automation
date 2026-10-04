@@ -1,4 +1,3 @@
-import time
 from playwright.sync_api import expect
 from locator.login import Login
 
@@ -12,6 +11,10 @@ class NaverLogin:
         self.page = page
         self.id_input = page.locator(Login.ID_INPUT["value"])
         self.password_input = page.locator(Login.PWD_INPUT["value"])
+        self.id_required_message = page.get_by_text(
+            Login.ID_REQUIRED_MESSAGE,
+            exact=True,
+        )
 
     def go_to_naver_page(self):
         # 메인 페이지로 이동
@@ -22,7 +25,8 @@ class NaverLogin:
         self.page.goto(Login.URL)
         # 로그인 버튼 클릭 (메인 페이지)
         self.page.locator(Login.LOGIN_BTN_MAIN["value"]).click()
-        time.sleep(3)
+        # 로그인 화면의 아이디 입력창이 보일 때까지 대기
+        expect(self.id_input).to_be_visible()
 
     def main_login_button_visible(self):
         return self.page.is_visible(Login.LOGIN_BTN_MAIN["value"])
