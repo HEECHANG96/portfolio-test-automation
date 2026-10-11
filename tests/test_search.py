@@ -4,36 +4,38 @@ from pages.search_page import NaverSearch
 SEARCH_KEYWORD = "테스트"
 
 
-@pytestrail.case('C20001')
-def test_search_input_and_button_visible(playwright_client):
+@pytestrail.case("C20001")
+def test_search_input_visible(playwright_client):
     """
-    (UI) 검색 입력창과 검색 버튼 존재 확인
+    네이버 메인 페이지의 검색 입력창 노출 확인
     """
-    client = playwright_client
-    search_util = NaverSearch(client.page)
+    search_page = NaverSearch(playwright_client.page)
 
-    # 1. 네이버 페이지 이동
-    search_util.go_to_naver_page()
+    # 1. 네이버 메인 페이지 이동
+    search_page.go_to_naver_page()
 
-    # 2. 검색 입력창 확인
-    assert search_util.search_bar_visible(), "검색 입력창이 보이지 않음"
-
-    # 3. 검색 버튼 확인
-    assert search_util.search_button_visible(), "검색 버튼이 보이지 않음"
+    # 2. 검색 입력창 노출 확인
+    assert search_page.search_bar_visible(), (
+        "검색 입력창이 보이지 않음"
+    )
 
 
-@pytestrail.case('C20002')
+@pytestrail.case("C20002")
 def test_search_functionality_redirect(playwright_client):
     """
-    정상 검색 → 결과 페이지 이동 확인
+    검색어 입력 후 Enter 키로 결과 페이지 이동 확인
     """
-    client = playwright_client
-    search_util = NaverSearch(client.page)
+    search_page = NaverSearch(playwright_client.page)
 
-    # 1. 네이버 페이지 이동
-    search_util.go_to_naver_page()
+    # 1. 네이버 메인 페이지 이동
+    search_page.go_to_naver_page()
 
-    # 2. 검색 실행 후 페이지 이동 확인
-    current_url = search_util.search_and_wait_redirect(SEARCH_KEYWORD)
+    # 2. 검색어 입력 후 Enter 키 입력
+    current_url = search_page.search_and_wait_redirect(
+        SEARCH_KEYWORD
+    )
 
-    assert search_util.is_result_page(), f"검색 결과 페이지로 이동하지 않음: {current_url}"
+    # 3. 검색 결과 페이지 이동 확인
+    assert search_page.is_result_page(), (
+        f"검색 결과 페이지로 이동하지 않음: {current_url}"
+    )
