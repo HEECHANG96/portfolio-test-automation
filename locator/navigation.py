@@ -6,7 +6,7 @@ class Navigation:
 
     CAFE_URL = 'https://section.cafe.naver.com/'
     BLOG_URL = 'https://section.blog.naver.com/'
-    FINANCE_URL = 'https://finance.naver.com/'
+    FINANCE_URL = 'https://stock.naver.com/'
 
     CAFE_TITLE = {"type": "XPATH", "value": '//a[span[@class="service_name" and text()="카페"]]'}
     BLOG_TITLE = {"type": "XPATH", "value": '//a[span[@class="service_name" and text()="블로그"]]'}

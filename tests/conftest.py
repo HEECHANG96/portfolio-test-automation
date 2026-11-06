@@ -1,14 +1,21 @@
+
 import pytest
+
 from common.playwright import PlaywrightClient
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def playwright_client():
-    # 여기서 실행 환경에 맞춰 인자 조정
-    client = PlaywrightClient(headless=False, viewport=(1920, 1080))
+    client = PlaywrightClient(
+        headless=False,
+        viewport=(1920, 1080)
+    )
 
-    # 실제로 Playwright를 시작하고 브라우저/컨텍스트/페이지를 연다.
+    # 테스트 시작 전 브라우저 생성
     client.start()
-    yield client
-    # yield 이후의 코드는 테스트가 모두 끝난 뒤(세션 종료 시) 실행된다.
-    client.stop()
+
+    try:
+        yield client
+    finally:
+        # 테스트 종료 후 브라우저 및 리소스 정리
+        client.stop()
