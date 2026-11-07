@@ -119,6 +119,8 @@ UI 구조가 변경되면 Locator와 Page Object를 중심으로 영향을 확�
 
 **실제 코드:** [로그인](tests/test_login.py) · [검색](tests/test_search.py) · [네비게이션](tests/test_navigation.py)
 
+**상세 테스트 케이스:** [전체 TC 10개 문서](docs/test-cases.md)
+
 ### 검증 범위 및 예외 처리
 
 - 로그인 테스트에는 실제 사용자 계정 정보를 사용하지 않습니다.
